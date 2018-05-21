@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible"
+          content="ie=edge">
+    <title></title>
+
+    <body>
+      <canvas id="canvas"></canvas>
+      <button type="button"
+              name="button"
+              onclick="clearInterval(gameInterval)">stop</button>
+      <script>
+        /* configuration
+         */
+        let config = {
+          CANVAS_WIDTH: 800,
+          CANVAS_HEIGHT:  600,
+          FRAME_PER_SECOND: 30,
+          DEBUG_TEXT_OFFSET: 10,
+          BALL_RADIUS: 10,
+          BALL_SPEED_X: 5,
+          BALL_SPEED_X_FACTOR:  5,
+          BALL_SPEED_Y: 10,
+          BALL_BOUNCE_BACK:  -1,
+          BRICK_AMOUNT:  4,
+          BRICK_SEPARATOR: 0.1,
+          MAX_BRICKS_PER_ROW:  10,
+          MAX_BRICKS_PER_COLUMN: 10,
+          PADDLE_WIDTH: 100,
+          PADDLE_HEIGHT: 10,
+          PADDLE_ELEVATION:  10
+        }
+        let constant = {
+          SECOND: 1000
+        }
+        // computed
+        {
+          config.REFRESH_RATE =  constant.SECOND / config.FRAME_PER_SECOND
+          config.PADDLE_POSITION_Y = config.CANVAS_HEIGHT - (config.PADDLE_HEIGHT + config.PADDLE_ELEVATION)
+          config.PADDLE_POSITION_BOTTOM_Y = config.CANVAS_HEIGHT - config.PADDLE_ELEVATION
+          config.BALL_START_X = config.CANVAS_WIDTH / 2
+          config.BALL_START_Y = config.CANVAS_HEIGHT / 2
+          config.BRICK_WIDTH = config.CANVAS_WIDTH / config.MAX_BRICKS_PER_ROW
+          config.BRICK_HEIGHT = (config.CANVAS_HEIGHT * .5) / config.MAX_BRICKS_PER_COLUMN
+          config.BRICK_AMOUNT = config.MAX_BRICKS_PER_ROW * config.MAX_BRICKS_PER_COLUMN
+        }
+        /*
+        variables globales
+        */
+        let canvas, canvasContext, gameInterval
+        /*
+        chargement du canvas
+        */
+        window.onload = function() {
+          //console.log(config)
+          canvas = document.getElementById('canvas')
+          canvas.width = config.CANVAS_WIDTH
+          canvas.height = config.CANVAS_HEIGHT
+          canvasContext = canvas.getContext('2d')
+          gameInterval = setInterval(updateAll, config.REFRESH_RATE)
+          canvas.addEventListener('mousemove', eventManager.onMouseMove)
+        }
+        /*
+        actions a effectuer dans un cycle
+        */
+        function updateAll() {
+          //console.log('[+] new turn')
+          ball.move()
+          board.draw()
+          //console.log(ball)
+          //console.log(paddle)
+        }
+        /*
+        gestion des évennements
+        */
+        let eventManager = (function() {
+          let instance = {}
+          instance.onMouseMove = function(event) {
+            mouse.updateInstance(event)
+            paddle.updateInstance()
+          }
+          return instance
+        })()
+        /*
+        gestion de la souris
+        */
+        let mouse = (function() {
+          let instance = {
+            position: {
+              x: null,
+              y:  null
+            }
+          }
+          instance.updateInstance = function(event) {
+            let rect = canvas.getBoundingClientRect()
+            let root = document.documentElement
+            mouse.position.x = event.clientX - rect.left - root.scrollLeft
+            mouse.position.y = event.clientY - rect.top - root.scrollTop
+          }
+          return instance
+        })()
+        /*
+        Gestion du positionnement de la balle
+        */
+        let ball = (function() {
+          let instance = {
+            speed: {
+              x: config.BALL_SPEED_X,
+              y: config.BALL_SPEED_Y
+            },
+            position: {
+              x: config.BALL_START_X,
+              y: config.BALL_START_Y
+            }
+          }
+          instance.reset = function() {
+            //console.log('reset ball position')
+            instance.position.x = config.BALL_START_X
+            instance.position.y = config.BALL_START_Y
+          }
+          instance.isBouncing = function() {
+            let bounce = {
+              right:  instance.position.x > canvas.width,
+              left:  instance.position.x < 0,
+              top: instance.position.y < 0,
+              bottom:  (function() {
+                let isBellowPaddleTop = instance.position.y >= paddle.edge.top
+                let isAbovePaddleBottom = instance.position.y <= paddle.edge.bottom
+                let isAfterPaddleLeft = instance.position.x >= paddle.edge.left
+                let isBeforePaddleRight = instance.position.x <= paddle.edge.right
+                return (isBellowPaddleTop && isAbovePaddleBottom && isAfterPaddleLeft && isBeforePaddleRight)
+              })()
+            }
+            return bounce
+          }
+          instance.bounceIfNeeded = function() {
+            let bounce = instance.isBouncing()
+            // rebond sur le coté de l'écran
+            if (bounce.right || bounce.left) {
+              //console.log('bounce back x')
+              instance.speed.x *= config.BALL_BOUNCE_BACK
+            }
+            // rebond sur le paddle ou sur le plafond
+            else if (bounce.top) {
+              //console.log('bounce back y')
+              instance.speed.y *= config.BALL_BOUNCE_BACK
+            }
+            // la balle rebondie sur le paddle
+            else if (bounce.bottom) {
+              let distanceFromPaddleCenter = instance.position.x - paddle.center
+              instance.speed.x = distanceFromPaddleCenter / config.BALL_SPEED_X_FACTOR
+              instance.speed.y *= config.BALL_BOUNCE_BACK
+            }
+            // la balle est sortie de l'écran
+            else if (instance.isOutsideDown()) {
+              //console.log('game over!')
+              // clearInterval(gameInterval)
+              instance.reset()
+            } else {
+              /* la balle continue */
+            }
+          }
+          instance.isOutsideDown = function() {
+            let out = instance.position.y > canvas.height
+            //console.log(`ball is out: ${out}`)
+            return out
+          }
+          instance.takeStep = function() {
+            instance.position.x += instance.speed.x
+            instance.position.y += instance.speed.y
+            //console.log(`new step: (${instance.position.x}x${instance.position.y})`)
+          }
+          instance.move = function() {
+            //console.log('processing new move')
+            instance.bounceIfNeeded()
+            instance.takeStep()
+          }
+          return instance
+        })()
+        /*
+        gestion du paddle
+        */
+        let paddle = (function() {
+          let instance = {
+            width: config.PADDLE_WIDTH,
+            height: config.PADDLE_HEIGHT,
+            position: {
+              x: config.CANVAS_WIDTH / 2,
+              y: config.PADDLE_POSITION_Y
+            },
+            edge:  null // calculé a la volée
+          }
+          instance.updateInstance = function() {
+            setPositionX()
+            setEdgesPosition()
+            setCenterPosition()
+          }
+
+          function setPositionX() {
+            instance.position.x = mouse.position.x - instance.width / 2
+            //console.log(`set new paddle position x (${instance.position.x})`)
+          }
+
+          function setEdgesPosition() {
+            //console.log('update paddle edges')
+            instance.edge = {
+              left: instance.position.x,
+              right:  instance.position.x + instance.width,
+              top: instance.position.y,
+              bottom:  instance.position.y + instance.height
+            }
+            //console.log(instance.edge)
+          }
+
+          function setCenterPosition() {
+            instance.center = instance.position.x + instance.width / 2
+          }
+          (function constructor() {
+            instance.updateInstance()
+          })()
+          return instance
+        })()
+        /*
+        gestion des briques
+        */
+        let bricks = (function() {
+          let instance = {
+            cells: []
+          };
+          instance.reset = function() {
+            instance.cells = Array.apply(null, Array(config.MAX_BRICKS_AMOUNT)).map(item => true)
+          };
+          (function constructor() {
+            instance.reset()
+          })()
+          return instance
+        })()
+        /*
+        Gestion du tracé des éléments du canvas
+        */
+        let board = (function() {
+          let instance = {}
+          instance.drawBackground = function() {
+            canvasContext.fillStyle = 'black'
+            canvasContext.fillRect(0, 0, canvas.width, canvas.height)
+          }
+          instance.drawBall = function() {
+            canvasContext.fillStyle = 'white'
+            canvasContext.beginPath()
+            canvasContext.arc(ball.position.x, ball.position.y, config.BALL_RADIUS, 0, Math.PI * 2, true)
+            canvasContext.fill()
+          }
+          instance.drawPaddle = function() {
+            canvasContext.fillStyle = 'red'
+            canvasContext.fillRect(paddle.position.x, paddle.position.y, paddle.width, paddle.height)
+          }
+          instance.drawBricks = function() {
+            canvasContext.fillStyle = 'blue'
+            let rowIterator = Array.from(Array(config.MAX_BRICKS_PER_COLUMN).keys())
+            let colIterator = Array.from(Array(config.MAX_BRICKS_PER_ROW).keys())
+            rowIterator.forEach(y => {
+              colIterator.forEach(x => {
+                //console.log(`rendering cell ${x}x${y}`)
+                canvasContext.fillRect(x * config.BRICK_WIDTH, y * config.BRICK_HEIGHT, config.BRICK_WIDTH - config.BRICK_SEPARATOR, config.BRICK_HEIGHT - config.BRICK_SEPARATOR)
+              })
+            })
+          }
+          instance.drawMousePosition = function() {
+            let x = mouse.position.x
+            let y = mouse.position.y
+            let brickX = (mouse.position.x / config.BRICK_WIDTH).toFixed(2)
+            let brickY = (mouse.position.y / config.BRICK_HEIGHT).toFixed(2)
+            let debugText = [`cursor: ${x}x${y}`, `brick:${brickX}x${brickY}`]
+            canvasContext.fillStyle = 'green'
+            canvasContext.strokeStyle = 'red'
+            canvasContext.lineWidth = 0.5
+            canvasContext.beginPath()
+            canvasContext.moveTo(mouse.position.x - config.DEBUG_TEXT_OFFSET, mouse.position.y)
+            canvasContext.lineTo(mouse.position.x + config.DEBUG_TEXT_OFFSET, mouse.position.y)
+            canvasContext.stroke()
+            canvasContext.beginPath()
+            canvasContext.moveTo(mouse.position.x, mouse.position.y - config.DEBUG_TEXT_OFFSET)
+            canvasContext.lineTo(mouse.position.x, mouse.position.y + config.DEBUG_TEXT_OFFSET)
+            canvasContext.stroke()
+            // canvasContext.arc(x, y, config.DEBUG_CURSOR_RADIUS, 0, Math.PI * 2, true)
+            // canvasContext.fill()
+            debugText.forEach((debugInfo, index) => {
+              canvasContext.fillText(debugInfo, x + config.DEBUG_TEXT_OFFSET, (y) - (index * config.DEBUG_TEXT_OFFSET))
+            })
+          }
+          // dessine tous les éléments du canvas
+          instance.draw = function() {
+            instance.drawBackground()
+            instance.drawBricks()
+            instance.drawBall()
+            instance.drawPaddle()
+            instance.drawMousePosition()
+          }
+          return instance
+        })()
+      </script>
+    </body>
+
+</html>
