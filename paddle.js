@@ -28,8 +28,19 @@ let paddle = (function () {
   function setCenterPosition() {
     instance.center = instance.position.x + instance.width / 2
   }
+
+  instance.moveRight = function () {
+    instance.position.x += config.PADDLE_SPEED
+    instance.updateInstance()
+  }
+
+  instance.moveLeft = function () {
+    instance.position.x -= config.PADDLE_SPEED
+    instance.updateInstance()
+  }
+
   instance.updateInstance = function updateInstance() {
-    setPositionX()
+    //setPositionX()
     setEdgesPosition()
     setCenterPosition()
   };

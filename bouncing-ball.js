@@ -11,7 +11,8 @@ window.onload = function () {
   canvas.height = config.CANVAS_HEIGHT
   canvasContext = canvas.getContext('2d')
   gameInterval = setInterval(updateAll, config.REFRESH_RATE)
-  canvas.addEventListener('mousemove', eventManager.onMouseMove)
+  // canvas.addEventListener('mousemove', eventManager.onMouseMove)
+  document.addEventListener('keydown', eventManager.onKeyDown)
 }
 
 /*

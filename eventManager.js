@@ -6,6 +6,27 @@ let eventManager = (function () {
 
   function movePaddleWithMouse() {
     paddle.updateInstance()
+  }
+
+  function movePaddleWithArrow(event) {
+    let arrowKeys = {
+      LEFT: 37,
+      UP: 38,
+      RIGHT: 39,
+      DOWN: 40
+    }
+    switch (event.keyCode) {
+    case arrowKeys.RIGHT:
+      paddle.moveRight()
+      break;
+    case arrowKeys.LEFT:
+      paddle.moveLeft()
+    default:
+      console.log('unknown key pressed')
+    }
+  }
+
+  function moveBallWithMouse() {
     ball.position = mouse.position
     ball.speed = {
       x: 1,
@@ -13,9 +34,14 @@ let eventManager = (function () {
     }
   }
 
+
   instance.onMouseMove = function onMouseMove(event) {
     mouse.updateInstance(event)
-    movePaddleWithMouse()
+  }
+
+  instance.onKeyDown = function onKeyDown(event) {
+    console.log('key down')
+    movePaddleWithArrow(event)
   }
 
   return instance
