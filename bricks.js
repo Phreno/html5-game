@@ -6,29 +6,29 @@ let bricks = (function () {
     cells: []
   };
 
-  instance.destroy = function (brickIndex) {
-    instance.cells[brickIndex] = false
+  instance.destroyAt = function destroyAt(cursor) {
+    instance.cells[cursor] = false
   }
-  instance.reset = function () {
+  instance.reset = function reset() {
     instance.cells = Array.apply(null, Array(config.BRICK_AMOUNT))
       .map(item => true)
   }
-  instance.isAlive = function (cell) {
+  instance.isAlive = function isAlive(cell) {
     let cursor = coordinate.getCursorFrom(cell)
     return instance.cells[cursor]
   }
-  instance.getRowIterator = function () {
+  instance.getRowIterator = function getRowIterator() {
     return rowIterator = Array.from(Array(config.MAX_BRICKS_PER_COLUMN)
       .keys())
   }
-  instance.getColumnIterator = function () {
+  instance.getColumnIterator = function getColumnIterator() {
     return colIterator = Array.from(Array(config.MAX_BRICKS_PER_ROW)
       .keys())
   }
-  instance.getLength = function () {
+  instance.getLength = function getLength() {
     return config.BRICK_WIDTH - config.BRICK_SEPARATOR
   }
-  instance.getWidth = function () {
+  instance.getWidth = function getWidth() {
     return config.BRICK_HEIGHT - config.BRICK_SEPARATOR
   };
   (function constructor() {

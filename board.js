@@ -17,12 +17,13 @@ let board = (function () {
   }
 
   function drawPaddle() {
-    canvasContext.fillStyle = 'red'
+    canvasContext.fillStyle = 'white'
     canvasContext.fillRect(paddle.position.x, paddle.position.y, paddle.width, paddle.height)
   }
 
-  function drawBrick(cell) {
-    let origin = coordinate.getOriginFrom(cell)
+  function drawBrick(cell, color = 'blue') {
+    let origin = coordinate.getCellOrigin(cell)
+    canvasContext.fillStyle = color
     canvasContext.fillRect(
       origin.x,
       origin.y,
@@ -32,7 +33,6 @@ let board = (function () {
   }
 
   function drawBricks() {
-    canvasContext.fillStyle = 'blue'
     bricks.getRowIterator()
       .forEach(row => {
         bricks.getColumnIterator()
@@ -49,32 +49,10 @@ let board = (function () {
   }
 
   function drawMousePosition() {
-    let x = mouse.position.x
-    let y = mouse.position.y
-    let brickX = (mouse.position.x / config.BRICK_WIDTH)
-      .toFixed(2)
-    let brickY = (mouse.position.y / config.BRICK_HEIGHT)
-      .toFixed(2)
-    let debugText = [`cursor: ${x}x${y}`, `brick:${brickX}x${brickY}`]
-    canvasContext.fillStyle = 'green'
-    canvasContext.strokeStyle = 'red'
-    canvasContext.lineWidth = 0.5
-    canvasContext.beginPath()
-    canvasContext.moveTo(mouse.position.x - config.DEBUG_TEXT_OFFSET, mouse.position.y)
-    canvasContext.lineTo(mouse.position.x + config.DEBUG_TEXT_OFFSET, mouse.position.y)
-    canvasContext.stroke()
-    canvasContext.beginPath()
-    canvasContext.moveTo(mouse.position.x, mouse.position.y - config.DEBUG_TEXT_OFFSET)
-    canvasContext.lineTo(mouse.position.x, mouse.position.y + config.DEBUG_TEXT_OFFSET)
-    canvasContext.stroke()
-    // canvasContext.arc(x, y, config.DEBUG_CURSOR_RADIUS, 0, Math.PI * 2, true)
-    // canvasContext.fill()
-    debugText.forEach((debugInfo, index) => {
-      canvasContext.fillText(debugInfo, x + config.DEBUG_TEXT_OFFSET, (y) - (index * config.DEBUG_TEXT_OFFSET))
-    })
+    drawBrick(mouse.cell, 'gray')
   }
   // dessine tous les éléments du canvas
-  instance.draw = function () {
+  instance.draw = function draw() {
     drawBackground()
     drawBricks()
     drawBall()

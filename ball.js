@@ -19,18 +19,18 @@ let ball = (function () {
     }
   }
 
-  function isHitting() {
-    let hit = (
-      instance.cursor < config.BRICK_AMOUNT &&
-      instance.cursor >= 0
-    )
-    return hit
-  }
+  // function isHitting() {
+  //   let hit = (
+  //     instance.cursor < config.BRICK_AMOUNT &&
+  //     instance.cursor >= 0
+  //   )
+  //   return hit
+  // }
 
   function reset() {
     instance.position.x = config.BALL_START_X
     instance.position.y = config.BALL_START_Y
-    coordinate.update(instance)
+    coordinate.updateOther(instance)
   }
 
   function isBouncing() {
@@ -49,11 +49,11 @@ let ball = (function () {
     return bounce
   }
 
-  function updateBricks() {
-    if (isHitting()) {
-      bricks.destroy(instance.cursor)
-    }
-  }
+  // function updateBricks() {
+  //   if (isHitting()) {
+  //     bricks.destroy(instance.cursor)
+  //   }
+  // }
 
   function bounceX() {
     instance.speed.x *= config.BALL_BOUNCE_BACK
@@ -111,11 +111,12 @@ let ball = (function () {
 
   function updateInstance() {
     move()
-    coordinate.update(instance)
+    coordinate.updateOther(instance)
   }
-  instance.move = function () {
+  instance.move = function move() {
     bounceAgainstWall()
     updateInstance()
+    bricks.destroyAt(instance.cursor)
   }
   return instance
 })()

@@ -10,24 +10,30 @@ let coordinate = (function () {
   }
 
   function getColumnFrom(x) {
-    return Math.floor(x / config.MAX_BRICKS_PER_COLUMN)
+    return Math.floor(x / config.BRICK_WIDTH)
   }
 
   function getRowFrom(y) {
-    return Math.floor(y / config.MAX_BRICKS_PER_ROW)
+    return Math.floor(y / config.BRICK_HEIGHT)
   }
 
-  function getOriginFrom(cell) {
+  function getCellOrigin(cell) {
     let origin = {
-      x: getXFrom(cell.column),
-      y: getYFrom(cell.row)
+      x: cell.column * config.BRICK_WIDTH,
+      y: cell.row * config.BRICK_HEIGHT
     }
+    return origin
+  }
+
+  function getPositionOrigin(position) {
+    let cell = getCellFrom(position)
+    let origin = getCellOrigin(cell)
     return origin
   }
 
   function setOrigin(other) {
     try {
-      other.origin = getOriginFrom(other)
+      other.origin = getPositionOrigin(other)
     } catch (e) {
       console.error(e)
     }
@@ -50,13 +56,13 @@ let coordinate = (function () {
   }
 
   function getCursorFrom(cell) {
-    let index
+    let cursor
     try {
-      index = cell.column * (1 + cell.row)
+      cursor = cell.column + cell.row * config.MAX_BRICKS_PER_ROW
     } catch (e) {
       console.error(e)
     }
-    return index
+    return cursor
   }
 
   function setCursor(other) {
@@ -64,8 +70,8 @@ let coordinate = (function () {
   }
 
   instance.getCursorFrom = getCursorFrom
-  instance.getOriginFrom = getOriginFrom
-  instance.update = function (other) {
+  instance.getCellOrigin = getCellOrigin
+  instance.updateOther = function updateOther(other) {
     setCell(other)
     setOrigin(other)
     setCursor(other)
