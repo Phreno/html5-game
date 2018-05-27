@@ -165,17 +165,47 @@ let ball = (function () {
       false
   }
 
+  function getAdjacentCellFromPreviousStateOnColumn() { // basé sur l'historique
+    return {
+      column: getPreviousState()
+        .cell.column,
+      row: instance.cell.row
+    }
+  }
+
+  function getAdjacentCellFromPreviousStateOnRow() { // basé sur l'historique
+    return {
+      column: instance.cell.column,
+      row: getPreviousState()
+        .cell.row
+    }
+  }
+
+  function handleBrickBounceX() {
+    let fixedAdjacentColumn = !bricks.isAlive(getAdjacentCellFromPreviousStateOnColumn())
+    if (hasColumnChanged() && fixedAdjacentColumn) {
+      bounceX()
+    }
+  }
+
+  function handleBrickBounceY() {
+    let fixedAdjacentRow = !bricks.isAlive(getAdjacentCellFromPreviousStateOnRow())
+    if (hasRowChanged() && fixedAdjacentRow) {
+      bounceY()
+    }
+  }
+
+  function handleBrickCollision() {
+    if (hasBrickUnder()) {
+      bricks.destroyAt(instance.cursor)
+      handleBrickBounceX()
+      handleBrickBounceY()
+    }
+  }
+
   function handleBrickActions() {
     if (isValidRow() && isValidColumn()) {
-      if (hasBrickUnder()) {
-        bricks.destroyAt(instance.cursor)
-        if (hasRowChanged()) {
-          bounceY()
-        }
-        if (hasColumnChanged()) {
-          bounceX()
-        }
-      }
+      handleBrickCollision()
     }
   }
   instance.updateInstance = updateInstance
