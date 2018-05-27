@@ -183,14 +183,26 @@ let ball = (function () {
 
   function handleBrickBounceX() {
     let fixedAdjacentColumn = !bricks.isAlive(getAdjacentCellFromPreviousStateOnColumn())
-    if (hasColumnChanged() && fixedAdjacentColumn) {
+    let bounce = hasColumnChanged() && fixedAdjacentColumn
+    if (bounce) {
       bounceX()
     }
+    return bounce
   }
 
   function handleBrickBounceY() {
     let fixedAdjacentRow = !bricks.isAlive(getAdjacentCellFromPreviousStateOnRow())
-    if (hasRowChanged() && fixedAdjacentRow) {
+    let bounce = hasRowChanged() && fixedAdjacentRow
+    if (bounce) {
+      bounceY()
+    }
+    return bounce
+  }
+
+  function handleBrickBounce() {
+    let success = handleBrickBounceX() || handleBrickBounceY()
+    if (!success) {
+      bounceX()
       bounceY()
     }
   }
@@ -198,8 +210,7 @@ let ball = (function () {
   function handleBrickCollision() {
     if (hasBrickUnder()) {
       bricks.destroyAt(instance.cursor)
-      handleBrickBounceX()
-      handleBrickBounceY()
+      handleBrickBounce()
     }
   }
 

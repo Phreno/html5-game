@@ -6,12 +6,26 @@ let bricks = (function () {
     cells: []
   };
 
+  function getGutter() {
+    return Array.apply(null, Array(3 * config.MAX_BRICKS_PER_ROW))
+      .map(item => false)
+  }
+
+  function getGrid() {
+    return Array.apply(null, Array(config.BRICK_AMOUNT))
+      .map(item => true)
+  }
+
+  function setNewGrid() {
+    instance.cells = getGutter()
+      .concat(getGrid())
+  }
+
   instance.destroyAt = function destroyAt(cursor) {
     instance.cells[cursor] = false
   }
   instance.reset = function reset() {
-    instance.cells = Array.apply(null, Array(config.BRICK_AMOUNT))
-      .map(item => true)
+    setNewGrid()
   }
   instance.isAlive = function isAlive(cell) {
     let cursor = coordinate.getCursorFrom(cell)
@@ -24,6 +38,9 @@ let bricks = (function () {
   instance.getColumnIterator = function getColumnIterator() {
     return colIterator = Array.from(Array(config.MAX_BRICKS_PER_ROW)
       .keys())
+  }
+  instance.remains = function remains() {
+    return instance.cells.reduce((a, b) => b ? a + 1 : a, 0)
   }
   instance.getLength = function getLength() {
     return config.BRICK_WIDTH - config.BRICK_SEPARATOR
