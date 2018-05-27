@@ -3,6 +3,7 @@ Gestion du positionnement de la balle
 */
 let ball = (function () {
   let instance = {
+    history: [],
     speed: { // offset de mouvement de la balle
       x: config.BALL_SPEED_X,
       y: config.BALL_SPEED_Y
@@ -93,11 +94,43 @@ let ball = (function () {
   function move() {
     moveX()
     moveY()
+    coordinate.updateOther(instance)
+  }
+
+  function isFullHistory() {
+    return config.HISTORY_SIZE <= instance.history.length
+  }
+
+  function cloneInstance() {
+    let propertiesToKeep = [
+      'position',
+      'cell',
+      'origin',
+      'speed'
+    ]
+    let clone = Object.assign({}, ...propertiesToKeep.map(key => ({
+      [key]: instance[key]
+    })))
+    instance.history.push(clone)
+  }
+
+  function limitHistorySize() {
+    if (isFullHistory()) {
+      instance.history = (([, ...tail]) => tail)(instance.history)
+    }
+  }
+
+  function store() {
+    limitHistorySize()
+    cloneInstance()
+  }
+
+  function getPreviousState(stepBack = 1) {
+    return instance.history[instance.history.length - stepBack]
   }
 
   function updateInstance() {
     move()
-    coordinate.updateOther(instance)
   }
 
   function isValidColumn() {
@@ -114,16 +147,43 @@ let ball = (function () {
     )
   }
 
-  function hitABrick() {
+  function hasBrickUnder() {
+    return bricks.isAlive(instance.cell)
+  }
+
+  function hasColumnChanged() {
+    let previous = getPreviousState()
+    return previous ?
+      previous.cell.column !== instance.cell.column :
+      false
+  }
+
+  function hasRowChanged() {
+    let previous = getPreviousState()
+    return previous ?
+      previous.cell.row !== instance.cell.row :
+      false
+  }
+
+  function handleBrickActions() {
     if (isValidRow() && isValidColumn()) {
-      bricks.destroyAt(instance.cursor)
+      if (hasBrickUnder()) {
+        bricks.destroyAt(instance.cursor)
+        if (hasRowChanged()) {
+          bounceY()
+        }
+        if (hasColumnChanged()) {
+          bounceX()
+        }
+      }
     }
   }
   instance.updateInstance = updateInstance
   instance.move = function move() {
+    store()
     bounceAgainstWall()
     updateInstance()
-    hitABrick()
+    handleBrickActions()
   }
   return instance
 })()

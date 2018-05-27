@@ -15,7 +15,8 @@ let config = {
   MAX_BRICKS_PER_COLUMN: 10,
   PADDLE_WIDTH: 100,
   PADDLE_HEIGHT: 10,
-  PADDLE_ELEVATION:  10
+  PADDLE_ELEVATION: 10,
+  HISTORY_SIZE: 10
 }
 let constant = {
   SECOND: 1000
@@ -37,4 +38,4 @@ let constant = {
 // config.BALL_SPEED_X = -10
 // config.BALL_START_X = config.CANVAS_WIDTH - 10
 // config.BALL_START_X = 10
-// config.BALL_START_Y = (config.MAX_BRICKS_PER_COLUMN - 1) * config.BRICK_HEIGHT + config.BRICK_HEIGHT / 2
+config.BALL_START_Y = 0

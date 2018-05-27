@@ -15,7 +15,7 @@ let bricks = (function () {
   }
   instance.isAlive = function isAlive(cell) {
     let cursor = coordinate.getCursorFrom(cell)
-    return instance.cells[cursor]
+    return instance.cells[cursor] || false
   }
   instance.getRowIterator = function getRowIterator() {
     return rowIterator = Array.from(Array(config.MAX_BRICKS_PER_COLUMN)
