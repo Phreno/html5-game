@@ -26,9 +26,5 @@ let debbuger = (function () {
     instance.dumpBricks()
     instance.dumpBoard()
   }
-  instance.destroyAt = function (cursor) {
-    bricks.destroyAt(cursor)
-    board.draw()
-  }
   return instance
 })()

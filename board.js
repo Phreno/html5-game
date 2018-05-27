@@ -49,7 +49,7 @@ let board = (function () {
   }
 
   function drawMousePosition() {
-    drawBrick(mouse.cell, 'gray')
+
   }
   // dessine tous les éléments du canvas
   instance.draw = function draw() {

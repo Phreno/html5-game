@@ -19,14 +19,6 @@ let ball = (function () {
     }
   }
 
-  // function isHitting() {
-  //   let hit = (
-  //     instance.cursor < config.BRICK_AMOUNT &&
-  //     instance.cursor >= 0
-  //   )
-  //   return hit
-  // }
-
   function reset() {
     instance.position.x = config.BALL_START_X
     instance.position.y = config.BALL_START_Y
@@ -48,12 +40,6 @@ let ball = (function () {
     }
     return bounce
   }
-
-  // function updateBricks() {
-  //   if (isHitting()) {
-  //     bricks.destroy(instance.cursor)
-  //   }
-  // }
 
   function bounceX() {
     instance.speed.x *= config.BALL_BOUNCE_BACK
@@ -113,10 +99,31 @@ let ball = (function () {
     move()
     coordinate.updateOther(instance)
   }
+
+  function isValidColumn() {
+    return (
+      instance.cell.column >= 0 &&
+      instance.cell.column < config.MAX_BRICKS_PER_COLUMN
+    )
+  }
+
+  function isValidRow() {
+    return (
+      instance.cell.row >= 0 &&
+      instance.cell.row < config.MAX_BRICKS_PER_ROW
+    )
+  }
+
+  function hitABrick() {
+    if (isValidRow() && isValidColumn()) {
+      bricks.destroyAt(instance.cursor)
+    }
+  }
+  instance.updateInstance = updateInstance
   instance.move = function move() {
     bounceAgainstWall()
     updateInstance()
-    bricks.destroyAt(instance.cursor)
+    hitABrick()
   }
   return instance
 })()

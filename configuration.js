@@ -31,3 +31,10 @@ let constant = {
   config.BRICK_HEIGHT = (config.CANVAS_HEIGHT * .5) / config.MAX_BRICKS_PER_COLUMN
   config.BRICK_AMOUNT = config.MAX_BRICKS_PER_ROW * config.MAX_BRICKS_PER_COLUMN
 }
+
+// DEBUG
+// config.BALL_SPEED_Y = 0
+// config.BALL_SPEED_X = -10
+// config.BALL_START_X = config.CANVAS_WIDTH - 10
+// config.BALL_START_X = 10
+// config.BALL_START_Y = (config.MAX_BRICKS_PER_COLUMN - 1) * config.BRICK_HEIGHT + config.BRICK_HEIGHT / 2
