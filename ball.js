@@ -3,6 +3,8 @@ Gestion du positionnement de la balle
 */
 let ball = (function () {
   let instance = {
+    color: 'white',
+    radius: 10,
     history: [],
     speed: { // offset de mouvement de la balle
       x: config.BALL_SPEED_X,
@@ -42,12 +44,21 @@ let ball = (function () {
     return bounce
   }
 
+  function colorBounce(color = 'gray') {
+    instance.color = color
+    setTimeout(function () {
+      instance.color = 'white'
+    }, 50)
+  }
+
   function bounceX() {
     instance.speed.x *= config.BALL_BOUNCE_BACK
+    colorBounce()
   }
 
   function bounceY() {
     instance.speed.y *= config.BALL_BOUNCE_BACK
+    colorBounce()
   }
 
   function bouncePaddle() {
