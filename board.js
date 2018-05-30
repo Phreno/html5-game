@@ -21,7 +21,7 @@ let board = (function () {
     canvasContext.fillRect(paddle.position.x, paddle.position.y, paddle.width, paddle.height)
   }
 
-  function drawBrick(cell, color = 'blue') {
+  function drawBrick(cell, color = 'white') {
     let origin = coordinate.getCellOrigin(cell)
     canvasContext.fillStyle = color
     canvasContext.fillRect(
