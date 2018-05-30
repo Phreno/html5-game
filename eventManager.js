@@ -8,22 +8,8 @@ let eventManager = (function () {
     paddle.updateInstance()
   }
 
-  function movePaddleWithArrow(event) {
-    let arrowKeys = {
-      LEFT: 37,
-      UP: 38,
-      RIGHT: 39,
-      DOWN: 40
-    }
-    switch (event.keyCode) {
-    case arrowKeys.RIGHT:
-      paddle.moveRight()
-      break;
-    case arrowKeys.LEFT:
-      paddle.moveLeft()
-    default:
-      console.log('unknown key pressed')
-    }
+  function handleArrowMove(event) {
+    paddle.movement = event
   }
 
   function moveBallWithMouse() {
@@ -41,7 +27,12 @@ let eventManager = (function () {
 
   instance.onKeyDown = function onKeyDown(event) {
     console.log('key down')
-    movePaddleWithArrow(event)
+    handleArrowMove(event)
+  }
+
+  instance.onKeyUp = function onKeyUp(event) {
+    console.log('key up')
+    handleArrowMove(null)
   }
 
   return instance

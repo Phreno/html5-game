@@ -5,6 +5,7 @@ let paddle = (function () {
   let instance = {
     width: config.PADDLE_WIDTH,
     height: config.PADDLE_HEIGHT,
+    movement:  null, // mis à jour via keyboard event
     position: {
       x: config.CANVAS_WIDTH / 2,
       y: config.PADDLE_POSITION_Y
@@ -29,21 +30,43 @@ let paddle = (function () {
     instance.center = instance.position.x + instance.width / 2
   }
 
-  instance.moveRight = function () {
+  function moveRight() {
     instance.position.x += config.PADDLE_SPEED
     instance.updateInstance()
   }
 
-  instance.moveLeft = function () {
+  function moveLeft() {
     instance.position.x -= config.PADDLE_SPEED
     instance.updateInstance()
   }
+
+  instance.handleMoveAction = function handleMoveAction() {
+    let arrowKeys = {
+      LEFT: 37,
+      UP: 38,
+      RIGHT: 39,
+      DOWN: 40
+    }
+    if (instance.movement && instance.movement.keyCode) {
+      switch (instance.movement.keyCode) {
+      case arrowKeys.RIGHT:
+        moveRight()
+        break;
+      case arrowKeys.LEFT:
+        moveLeft()
+      default:
+        console.log('unknown key pressed')
+      }
+    }
+  }
+
 
   instance.updateInstance = function updateInstance() {
     //setPositionX()
     setEdgesPosition()
     setCenterPosition()
   };
+
   (function constructor() {
     instance.updateInstance()
   })()
