@@ -26,12 +26,10 @@ let eventManager = (function () {
   }
 
   instance.onKeyDown = function onKeyDown(event) {
-    console.log('key down')
     handleArrowMove(event)
   }
 
   instance.onKeyUp = function onKeyUp(event) {
-    console.log('key up')
     handleArrowMove(null)
   }
 

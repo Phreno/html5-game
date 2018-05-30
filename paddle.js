@@ -30,14 +30,34 @@ let paddle = (function () {
     instance.center = instance.position.x + instance.width / 2
   }
 
-  function moveRight() {
+  function hasReachRightBorder() {
+    return canvas.width < instance.position.x + .5 * instance.width
+  }
+
+  function hasReachLeftBorder() {
+    return 0 > instance.position.x + .5 * instance.width
+  }
+
+  function increaseXPosition() {
     instance.position.x += config.PADDLE_SPEED
-    instance.updateInstance()
+  }
+
+  function decreaseXPosition() {
+    instance.position.x -= config.PADDLE_SPEED
+  }
+
+  function moveRight() {
+    if (!hasReachRightBorder()) {
+      increaseXPosition()
+      instance.updateInstance()
+    }
   }
 
   function moveLeft() {
-    instance.position.x -= config.PADDLE_SPEED
-    instance.updateInstance()
+    if (!hasReachLeftBorder()) {
+      decreaseXPosition()
+      instance.updateInstance()
+    }
   }
 
   instance.handleMoveAction = function handleMoveAction() {
@@ -55,7 +75,6 @@ let paddle = (function () {
       case arrowKeys.LEFT:
         moveLeft()
       default:
-        console.log('unknown key pressed')
       }
     }
   }
