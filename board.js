@@ -2,10 +2,12 @@
 Gestion du tracé des éléments du canvas
 */
 let board = (function () {
-  let instance = {}
+  let instance = {
+    color: 'black'
+  }
 
   function drawBackground() {
-    canvasContext.fillStyle = 'black'
+    canvasContext.fillStyle = instance.color
     canvasContext.fillRect(0, 0, canvas.width, canvas.height)
   }
 
@@ -17,11 +19,11 @@ let board = (function () {
   }
 
   function drawPaddle() {
-    canvasContext.fillStyle = 'white'
+    canvasContext.fillStyle = paddle.color
     canvasContext.fillRect(paddle.position.x, paddle.position.y, paddle.width, paddle.height)
   }
 
-  function drawBrick(cell, color = 'white') {
+  function drawBrick(cell, color = bricks.color) {
     let origin = coordinate.getCellOrigin(cell)
     canvasContext.fillStyle = color
     canvasContext.fillRect(

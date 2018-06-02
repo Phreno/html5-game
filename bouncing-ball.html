@@ -1,43 +1,30 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
-    <meta http-equiv="x-ua-compatible"
-          content="ie=edge">
-    <title></title>
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
 
-    <body>
-      <canvas id="canvas"></canvas>
-      <button type="button"
-              name="button"
-              onclick="clearInterval(gameInterval)">stop</button>
-      <!-- CHARGEMENT DES SCRIPTS -->
-      <!-- Gestion du context -->
-      <script src="./configuration.js"
-              charset="utf-8"></script>
-      <script src="./bouncing-ball.js"
-              charset="utf-8"></script>
-      <script src="./eventManager.js"
-              charset="utf-8"></script>
-      <script src="./coordinate.js"
-              charset="utf-8"></script>
-      <!-- Gestion des objets du jeu -->
-      <script src="./ball.js"
-              charset="utf-8"></script>
-      <script src="./board.js"
-              charset="utf-8"></script>
-      <script src="./bricks.js"
-              charset="utf-8"></script>
-      <script src="./mouse.js"
-              charset="utf-8"></script>
-      <script src="paddle.js"
-              charset="utf-8"></script>
-      <!-- Outils de developpement -->
-      <script src="./debugger.js"
-              charset="utf-8"></script>
-    </body>
+        <body>
+                <canvas id="canvas"></canvas>
+                <button type="button" name="button" onclick="clearInterval(gameInterval)">stop</button>
+                <!-- CHARGEMENT DES SCRIPTS -->
+                <!-- Gestion du context -->
+                <script src="./configuration.js" charset="utf-8"></script>
+                <script src="./bouncing-ball.js" charset="utf-8"></script>
+                <script src="./eventManager.js" charset="utf-8"></script>
+                <script src="./coordinate.js" charset="utf-8"></script>
+                <script src="./effects.js" charset="utf-8"></script>
+                <!-- Gestion des objets du jeu -->
+                <script src="./ball.js" charset="utf-8"></script>
+                <script src="./board.js" charset="utf-8"></script>
+                <script src="./bricks.js" charset="utf-8"></script>
+                <script src="./mouse.js" charset="utf-8"></script>
+                <script src="paddle.js" charset="utf-8"></script>
+                <!-- Outils de developpement -->
+                <script src="./debugger.js" charset="utf-8"></script>
+        </body>
 
 </html>

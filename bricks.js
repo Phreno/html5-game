@@ -3,7 +3,8 @@ gestion des briques
 */
 let bricks = (function () {
   let instance = {
-    cells: []
+    cells: [],
+    color: 'white'
   };
 
   function getGutter() {
@@ -21,12 +22,24 @@ let bricks = (function () {
       .concat(getGrid())
   }
 
-  instance.destroyAt = function destroyAt(cursor) {
-    instance.cells[cursor] = false
+  function remains() {
+    return instance.cells.reduce((a, b) => b ? a + 1 : a, 0)
   }
-  instance.reset = function reset() {
+
+  function reset() {
     setNewGrid()
   }
+
+  instance.destroyAt = function destroyAt(cursor) {
+    console.log(cursor);
+    instance.cells[cursor] = false
+    if (!remains()) {
+      reset()
+    }
+  }
+  instance.reset = reset
+  instance.remains = remains
+
   instance.isAlive = function isAlive(cell) {
     let cursor = coordinate.getCursorFrom(cell)
     return instance.cells[cursor] || false
@@ -38,9 +51,6 @@ let bricks = (function () {
   instance.getColumnIterator = function getColumnIterator() {
     return colIterator = Array.from(Array(config.MAX_BRICKS_PER_ROW)
       .keys())
-  }
-  instance.remains = function remains() {
-    return instance.cells.reduce((a, b) => b ? a + 1 : a, 0)
   }
   instance.getLength = function getLength() {
     return config.BRICK_WIDTH - config.BRICK_SEPARATOR

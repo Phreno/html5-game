@@ -1,24 +1,28 @@
-/*
-Gestion du positionnement de la balle
-*/
-let ball = (function () {
+/**
+ * @description Gestion de son positionnement et de ses collisions
+ * @returns L'instance de la balle
+ */
+ball = (function () {
+
   let instance = {
-    color: 'white',
-    radius: 10,
-    history: [],
-    speed: { // offset de mouvement de la balle
-      x: config.BALL_SPEED_X,
-      y: config.BALL_SPEED_Y
-    },
-    position: { // position de la balle sur le canvas
-      x: config.BALL_START_X,
-      y: config.BALL_START_Y
-    },
     cell: { // coordonnée {col, row}
       // définition au tour par tour
     },
+    color: 'white',
+    history: [],
     origin: { // coordonnées {x, y} de référence de la brick sous la balle
       // définition au tour par tour
+    },
+    position: {
+      // position de la balle sur le canvas
+      x: config.BALL_START_X,
+      y: config.BALL_START_Y
+    },
+    radius: 10,
+    speed: {
+      // offset de mouvement de la balle
+      x: config.BALL_SPEED_X,
+      y: config.BALL_SPEED_Y
     }
   }
 
@@ -63,7 +67,7 @@ let ball = (function () {
 
   function bouncePaddle() {
     let distanceFromPaddleCenter = instance.position.x - paddle.center
-    instance.speed.x = distanceFromPaddleCenter / config.BALL_SPEED_X_FACTOR
+    instance.speed.x = distanceFromPaddleCenter * config.BALL_SPEED_X_FACTOR
     bounceY()
   }
 
@@ -210,21 +214,49 @@ let ball = (function () {
     return bounce
   }
 
+  function bounceAgainstEdge() {
+    return handleBrickBounceX() || handleBrickBounceY()
+  }
+
+  function bounceAgainstCorner() {
+    bounceX()
+    bounceY()
+  }
+
   function handleBrickBounce() {
-    let success = handleBrickBounceX() || handleBrickBounceY()
-    if (!success) {
-      bounceX()
-      bounceY()
+    if (!bounceAgainstEdge()) {
+      bounceAgainstCorner()
     }
   }
 
+  /**
+   * @description Détruit la brique sous la balle le cas échéant
+   * @author K3rn€l_P4n1k
+   */
   function handleBrickCollision() {
     if (hasBrickUnder()) {
       bricks.destroyAt(instance.cursor)
       handleBrickBounce()
+      effects.blink()
     }
   }
+  /**
+   * @description Vérifie que la balle est bien sur la grille
+   * @author K3rn€l_P4n1k
+   * @return Vrai si une brique peut exister sous la balle
+   * 
+   * *Lors du rafraîchissement de l'image, la balle sort de la fenêtre pour activer le rebond
+   */
+  function isInsideGrid() {
+    return isValidColumn() && isValidRow()
+  }
 
+  /**
+   * @description Prend en charge les intéractions avec les briques.
+   * @author K3rn€l_P4n1k
+   * 
+   * *Le curseur peut-être mal évalué si la balle sort du canvas. La validité de la brique est vérifiée avant la destruction  
+   */
   function handleBrickActions() {
     if (isValidRow() && isValidColumn()) {
       handleBrickCollision()

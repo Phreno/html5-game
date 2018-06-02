@@ -5,6 +5,7 @@ let paddle = (function () {
   let instance = {
     width: config.PADDLE_WIDTH,
     height: config.PADDLE_HEIGHT,
+    color: 'white',
     movement:  null, // mis à jour via keyboard event
     position: {
       x: config.CANVAS_WIDTH / 2,
@@ -69,12 +70,12 @@ let paddle = (function () {
     }
     if (instance.movement && instance.movement.keyCode) {
       switch (instance.movement.keyCode) {
-      case arrowKeys.RIGHT:
-        moveRight()
-        break;
-      case arrowKeys.LEFT:
-        moveLeft()
-      default:
+        case arrowKeys.RIGHT:
+          moveRight()
+          break;
+        case arrowKeys.LEFT:
+          moveLeft()
+        default:
       }
     }
   }
