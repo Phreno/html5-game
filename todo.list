@@ -1,0 +1,3 @@
+TODO: externaliser les fonctions de dessins dans un drawer
+TODO: externaliser le bounce de la balle
+FIXME: la ball rebondie toujours vers la droite quand elle touche une brique
