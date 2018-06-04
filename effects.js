@@ -8,18 +8,27 @@ let effects = (function effects() {
         board.color = 'black'
     }
 
-    function reverseColors() {
+    function inverseColors() {
         ball.color = 'black'
         bricks.color = 'black'
         paddle.color = 'black'
         board.color = 'white'
     }
 
+    function reverseColors() {
+        ('white' === paddle.color) ?
+        inverseColors(): restoreColors()
+    }
 
     instance.blink = function blink() {
         reverseColors()
-        setTimeout(restoreColors, 50)
     }
+
+    instance.ballHit = function ballHit() {
+        ball.color = 'red'
+        ball.opacity = 1
+    }
+
 
     return instance
 })()

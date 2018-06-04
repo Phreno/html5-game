@@ -8,6 +8,7 @@ ball = (function () {
     cell: { // coordonnée {col, row}
       // définition au tour par tour
     },
+    opacity: 1,
     color: 'white',
     history: [],
     origin: { // coordonnées {x, y} de référence de la brick sous la balle
@@ -48,21 +49,12 @@ ball = (function () {
     return bounce
   }
 
-  function colorBounce(color = 'gray') {
-    instance.color = color
-    setTimeout(function () {
-      instance.color = 'white'
-    }, 50)
-  }
-
   function bounceX() {
     instance.speed.x *= config.BALL_BOUNCE_BACK
-    colorBounce()
   }
 
   function bounceY() {
     instance.speed.y *= config.BALL_BOUNCE_BACK
-    colorBounce()
   }
 
   function bouncePaddle() {
@@ -71,8 +63,9 @@ ball = (function () {
     bounceY()
   }
 
-  function bounceAgainstWall() {
+  function handleBoundaryBounce() {
     let bounce = isBouncing()
+    let isHandled = true
     // rebond sur le coté de l'écran
     if (bounce.right || bounce.left) {
       bounceX()
@@ -89,8 +82,9 @@ ball = (function () {
     else if (isOutsideDown()) {
       reset()
     } else {
-      /* la balle continue */
+      isHandled = false
     }
+    return isHandled
   }
 
   function isOutsideDown() {
@@ -180,6 +174,11 @@ ball = (function () {
       false
   }
 
+  /**
+   * @description Récupère une cellule permettant de calculer les problématiques de collisions
+   * @author K3rn€l_P4n1k
+   * @returns {{column:number, row: number}} La position de la cellule adjacente sur la column en fonction de la direction de la balle 
+   */
   function getAdjacentCellFromPreviousStateOnColumn() { // basé sur l'historique
     return {
       column: getPreviousState()
@@ -188,6 +187,11 @@ ball = (function () {
     }
   }
 
+  /**
+   * @description Récupère une cellule permettant de calculer les problématiques de collisions
+   * @author K3rn€l_P4n1k
+   * @returns {{column:number, row: number}} La position de la cellule adjacente sur la ligne en fonction de la direction de la balle 
+   */
   function getAdjacentCellFromPreviousStateOnRow() { // basé sur l'historique
     return {
       column: instance.cell.column,
@@ -196,6 +200,11 @@ ball = (function () {
     }
   }
 
+  /**
+   * @description Prend en charge (si besoin) le rebond de la balle sur l'axe X
+   * @author K3rn€l_P4n1k
+   * @returns
+   */
   function handleBrickBounceX() {
     let fixedAdjacentColumn = !bricks.isAlive(getAdjacentCellFromPreviousStateOnColumn())
     let bounce = hasColumnChanged() && fixedAdjacentColumn
@@ -205,6 +214,11 @@ ball = (function () {
     return bounce
   }
 
+  /**
+   * @description Prend en charge (si besoin) le rebond de la balle sur l'axe Y
+   * @author K3rn€l_P4n1k
+   * @returns {boolean} vrai si la balle à rebondi sur l'axe Y
+   */
   function handleBrickBounceY() {
     let fixedAdjacentRow = !bricks.isAlive(getAdjacentCellFromPreviousStateOnRow())
     let bounce = hasRowChanged() && fixedAdjacentRow
@@ -214,18 +228,34 @@ ball = (function () {
     return bounce
   }
 
-  function bounceAgainstEdge() {
+  /**
+   * @description Prend en charge (si besoin) le rebond de la balle sur un côte de la brique
+   * @author K3rn€l_P4n1k
+   * @returns {boolean }vrai si le rebond de la balle à été pris en charge
+   */
+  function handleBounceAgainstEdge() {
     return handleBrickBounceX() || handleBrickBounceY()
   }
 
+  /**
+   * @description Prend en charge le rebond de la balle sur le coin d'une brique
+   * @author K3rn€l_P4n1k
+   */
   function bounceAgainstCorner() {
     bounceX()
     bounceY()
   }
-
+  /**
+   * @description Prend en charge le type de rebond de la balle sur une brique
+   * @author K3rn€l_P4n1k
+   * 
+   * *Rebond sur le côté
+   * 
+   * *Rebond sur le coin
+   */
   function handleBrickBounce() {
-    if (!bounceAgainstEdge()) {
-      bounceAgainstCorner()
+    if (!handleBounceAgainstEdge()) {
+      // bounceAgainstCorner()
     }
   }
 
@@ -234,16 +264,17 @@ ball = (function () {
    * @author K3rn€l_P4n1k
    */
   function handleBrickCollision() {
-    if (hasBrickUnder()) {
+    let isHandled = hasBrickUnder()
+    if (isHandled) {
       bricks.destroyAt(instance.cursor)
       handleBrickBounce()
-      effects.blink()
     }
+    return isHandled
   }
   /**
    * @description Vérifie que la balle est bien sur la grille
    * @author K3rn€l_P4n1k
-   * @return Vrai si une brique peut exister sous la balle
+   * @return {boolean} vrai si une brique peut exister sous la balle
    * 
    * *Lors du rafraîchissement de l'image, la balle sort de la fenêtre pour activer le rebond
    */
@@ -258,16 +289,26 @@ ball = (function () {
    * *Le curseur peut-être mal évalué si la balle sort du canvas. La validité de la brique est vérifiée avant la destruction  
    */
   function handleBrickActions() {
+    let isHandled = false
     if (isValidRow() && isValidColumn()) {
-      handleBrickCollision()
+      isHandled = handleBrickCollision()
     }
+    return isHandled
   }
+
   instance.updateInstance = updateInstance
+
+  /**
+   * @description Prend en charge le prochain déplacement de la balle
+   * 
+   * *La balle se déplache à chaque frame
+   */
   instance.move = function move() {
-    store()
-    bounceAgainstWall()
-    updateInstance()
     handleBrickActions()
+    handleBoundaryBounce()
+    updateInstance()
+    store()
   }
+
   return instance
 })()

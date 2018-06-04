@@ -13,9 +13,11 @@ let board = (function () {
 
   function drawBall() {
     canvasContext.fillStyle = ball.color
+    canvasContext.globalAlpha = ball.opacity
     canvasContext.beginPath()
     canvasContext.arc(ball.position.x, ball.position.y, config.BALL_RADIUS, 0, Math.PI * 2, true)
     canvasContext.fill()
+    canvasContext.globalAlpha = 1
   }
 
   function drawPaddle() {
