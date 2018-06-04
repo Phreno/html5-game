@@ -206,8 +206,8 @@ ball = (function () {
    * @returns
    */
   function handleBrickBounceX() {
-    let fixedAdjacentColumn = !bricks.isAlive(getAdjacentCellFromPreviousStateOnColumn())
-    let bounce = hasColumnChanged() && fixedAdjacentColumn
+    let adjacentCellOnColumnExists = bricks.isAlive(getAdjacentCellFromPreviousStateOnColumn())
+    let bounce = hasColumnChanged() && adjacentCellOnColumnExists
     if (bounce) {
       bounceX()
     }
@@ -220,8 +220,8 @@ ball = (function () {
    * @returns {boolean} vrai si la balle à rebondi sur l'axe Y
    */
   function handleBrickBounceY() {
-    let fixedAdjacentRow = !bricks.isAlive(getAdjacentCellFromPreviousStateOnRow())
-    let bounce = hasRowChanged() && fixedAdjacentRow
+    let adjacentCellOnRowExists = bricks.isAlive(getAdjacentCellFromPreviousStateOnRow())
+    let bounce = hasRowChanged() && adjacentCellOnRowExists
     if (bounce) {
       bounceY()
     }
@@ -231,10 +231,13 @@ ball = (function () {
   /**
    * @description Prend en charge (si besoin) le rebond de la balle sur un côte de la brique
    * @author K3rn€l_P4n1k
-   * @returns {boolean }vrai si le rebond de la balle à été pris en charge
+   * @returns {boolean} vrai si le rebond de la balle à été pris en charge
    */
   function handleBounceAgainstEdge() {
-    return handleBrickBounceX() || handleBrickBounceY()
+    let handled = false;
+    handled = handled || handleBrickBounceX()
+    handled = handled || handleBrickBounceY()
+    return handled
   }
 
   /**
@@ -254,8 +257,28 @@ ball = (function () {
    * *Rebond sur le coin
    */
   function handleBrickBounce() {
-    if (!handleBounceAgainstEdge()) {
-      // bounceAgainstCorner()
+    //if (!handleBounceAgainstEdge()) {
+    //  bounceAgainstCorner()
+    //}
+    let previous = getPreviousState()
+    let bothTestsFailed = true
+
+    if (previous.cell.column != instance.cell.column) {
+      if (bricks.isAlive(previous.cell.column, instance.cell.column) == false) {
+        bounceX()
+        bothTestsFailed = false
+      }
+    }
+
+    if (previous.cell.row != instance.cell.row) {
+      if (bricks.isAlive(instance.cell.row, previous.cell.row) == false) {
+        bounceY()
+        bothTestsFailed = false
+      }
+    }
+
+    if (bothTestsFailed) { // armpit case, prevents ball from going through
+      bounceAgainstCorner()
     }
   }
 
@@ -266,7 +289,7 @@ ball = (function () {
   function handleBrickCollision() {
     let isHandled = hasBrickUnder()
     if (isHandled) {
-      bricks.destroyAt(instance.cursor)
+      //bricks.destroyAt(instance.cursor)
       handleBrickBounce()
     }
     return isHandled
@@ -302,11 +325,13 @@ ball = (function () {
    * @description Prend en charge le prochain déplacement de la balle
    * 
    * *La balle se déplache à chaque frame
+   * 
+   * !Le calcul du rebond se fait sur l'historique, il faut sauvegarder l'état de la balle après le calcul du rebond
    */
   instance.move = function move() {
+    updateInstance()
     handleBrickActions()
     handleBoundaryBounce()
-    updateInstance()
     store()
   }
 

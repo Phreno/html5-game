@@ -23,5 +23,5 @@ actions a effectuer dans un cycle
 function updateAll() {
   paddle.handleMoveAction()
   ball.move()
-  board.draw()
+  drawer.draw()
 }

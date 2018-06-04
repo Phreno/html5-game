@@ -33,7 +33,7 @@ let coordinate = (function () {
 
   function setOrigin(other) {
     try {
-      other.origin = getPositionOrigin(other)
+      other.origin = getPositionOrigin(other.position)
     } catch (e) {
       console.error(e)
     }

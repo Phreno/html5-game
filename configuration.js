@@ -55,5 +55,6 @@ let config = (function config() {
 // config.BALL_START_X = 10
 // config.BALL_START_Y = 0
 // config.BRICK_AMOUNT = 2
-//config.MAX_BRICKS_PER_ROW = 5
+// config.MAX_BRICKS_PER_ROW = 5
 // config.MAX_BRICKS_PER_COLUMN = 5
+config.BRICK_SEPARATOR = 1
