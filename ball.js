@@ -289,7 +289,7 @@ ball = (function () {
   function handleBrickCollision() {
     let isHandled = hasBrickUnder()
     if (isHandled) {
-      //bricks.destroyAt(instance.cursor)
+      bricks.destroyAt(instance.cursor)
       handleBrickBounce()
     }
     return isHandled
