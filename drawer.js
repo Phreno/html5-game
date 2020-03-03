@@ -2,16 +2,16 @@ let drawer = (function drawer() {
   let instance = {}
 
   function drawBackground() {
+    // -------
+    canvasContext.fillStyle = board.color
+    canvasContext.fillRect(0, 0, canvas.width, canvas.height)
     let url = "https://github.com/Phreno/html5-game/blob/master/background.jpg?raw=true"
 
     let img = new Image()
     img.src = url
-    canvasContext.drawImage(img)
+    canvasContext.drawImage(img, 800, 600)
 
     // origine
-    // -------
-    // canvasContext.fillStyle = board.color
-    // canvasContext.fillRect(0, 0, canvas.width, canvas.height)
 
     // data
     // ----
