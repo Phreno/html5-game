@@ -5,21 +5,10 @@ let drawer = (function drawer() {
     // -------
     canvasContext.fillStyle = board.color
     canvasContext.fillRect(0, 0, canvas.width, canvas.height)
-    let url = "https://github.com/Phreno/html5-game/blob/master/background.jpg?raw=true"
 
     let img = new Image()
-    img.src = url
-    canvasContext.drawImage(img, 800, 600)
-
-    // origine
-
-    // data
-    // ----
-    // let url = "https://github.com/Phreno/html5-game/blob/master/background.jpg?raw=true"
-    // let img = new Image(url)
-    // canvasContext.drawImage(img, 800, 600)
-
-
+    img.src = "https://github.com/Phreno/html5-game/blob/master/background.jpg?raw=true"
+    canvasContext.drawImage(img, canvas.width, canvas.height)
   }
 
   function drawBall() {
