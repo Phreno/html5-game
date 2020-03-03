@@ -1,22 +1,22 @@
 let config = (function config() {
   let instance = {
     CANVAS_WIDTH: 800,
-    CANVAS_HEIGHT:  600,
+    CANVAS_HEIGHT: 600,
     FRAME_PER_SECOND: 40,
     DEBUG_TEXT_OFFSET: 10,
-    BALL_COLOR: 'white',
+    BALL_COLOR: 'red',
     BALL_HIT_COLOR: 'gray',
     BALL_HIT_TIMEOUT: 50,
     BALL_RADIUS: 7,
     BALL_SPEED_X_FACTOR: 0.2,
     BALL_SPEED_Y_FACTOR: 2.5,
-    BALL_BOUNCE_BACK:  -1,
+    BALL_BOUNCE_BACK: -1,
     BRICK_SEPARATOR: 0,
     BRICK_COLOR: 'white',
     BRICK_HIT_COLOR: 'red',
     BRICK_HIT_TIMEOUT: 50,
-    MAX_BRICKS_PER_ROW:  20,
-    MAX_BRICKS_PER_COLUMN: 20,
+    MAX_BRICKS_PER_ROW: 10,
+    MAX_BRICKS_PER_COLUMN: 40,
     PADDLE_WIDTH: 100,
     PADDLE_HEIGHT: 10,
     PADDLE_SPEED: 20,
@@ -31,7 +31,7 @@ let config = (function config() {
   function updateConfig() {
     instance.BALL_SPEED_X = instance.CANVAS_WIDTH / 100 / 2;
     instance.BALL_SPEED_Y = instance.CANVAS_HEIGHT / 100 / 2 * instance.BALL_SPEED_Y_FACTOR;
-    instance.REFRESH_RATE =  constant.SECOND / instance.FRAME_PER_SECOND
+    instance.REFRESH_RATE = constant.SECOND / instance.FRAME_PER_SECOND
     instance.PADDLE_POSITION_Y = instance.CANVAS_HEIGHT - (instance.PADDLE_HEIGHT + instance.PADDLE_ELEVATION)
     instance.PADDLE_POSITION_BOTTOM_Y = instance.CANVAS_HEIGHT - instance.PADDLE_ELEVATION
     instance.BALL_START_X = instance.CANVAS_WIDTH / 2
