@@ -8,7 +8,7 @@ let drawer = (function drawer() {
 
     let img = new Image()
     img.src = "https://github.com/Phreno/html5-game/blob/master/background.jpg?raw=true"
-    canvasContext.drawImage(img, 50, 50)
+    canvasContext.drawImage(img, (canvas.width - img.width) / 2, 40)
   }
 
   function drawBall() {
