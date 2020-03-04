@@ -3,7 +3,7 @@ variables globales
 */
 let canvas, canvasContext, gameInterval
 
-window.onkeypress(ev => {
+document.addEventListener('keypress', ev => {
   gameInterval = setInterval(updateAll, config.REFRESH_RATE)
 })
 /*
