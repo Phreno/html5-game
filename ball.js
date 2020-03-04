@@ -29,8 +29,7 @@ ball = (function () {
 
   function reset() {
     instance.position.x = config.BALL_START_X
-    instance.position.y = confix.BALL_START_Y
-    instance.speed.y = config.BALL_SPEED_Y
+    instance.position.y = config.BALL_START_Y
     coordinate.updateOther(instance)
   }
 
