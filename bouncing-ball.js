@@ -3,12 +3,6 @@ variables globales
 */
 let canvas, canvasContext, gameInterval
 
-document.addEventListener('keypress', ev => {
-  let start = () => gameInterval = setInterval(updateAll, config.REFRESH_RATE)
-  [' ', 'Spacebar'].includes(event.key)
-    && !gameInterval
-    && start()
-})
 /*
 chargement du canvas
 */
