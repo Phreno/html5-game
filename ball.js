@@ -28,9 +28,8 @@ ball = (function () {
   }
 
   function reset() {
-    instance.position.x = paddle.position.x
-    instance.position.y = paddle.position.y
-    clearInterval(gameInterval)
+    instance.position.x = config.BALL_START_X
+    instance.position.y = confix.BALL_START_Y
     instance.speed.y = config.BALL_SPEED_Y
     coordinate.updateOther(instance)
   }
