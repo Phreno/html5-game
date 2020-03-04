@@ -2,7 +2,7 @@ let config = (function config() {
   let instance = {
     CANVAS_WIDTH: 800,
     CANVAS_HEIGHT: 600,
-    FRAME_PER_SECOND: 40,
+    FRAME_PER_SECOND: 25,
     DEBUG_TEXT_OFFSET: 10,
     BALL_COLOR: 'red',
     BALL_HIT_COLOR: 'gray',
