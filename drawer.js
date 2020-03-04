@@ -2,7 +2,6 @@ let drawer = (function drawer() {
   let instance = {}
 
   function drawBackground() {
-    // -------
     canvasContext.fillStyle = board.color
     canvasContext.fillRect(0, 0, canvas.width, canvas.height)
 
