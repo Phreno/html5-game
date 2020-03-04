@@ -57,4 +57,4 @@ let config = (function config() {
 // config.BRICK_AMOUNT = 2
 // config.MAX_BRICKS_PER_ROW = 5
 // config.MAX_BRICKS_PER_COLUMN = 5
-config.BRICK_SEPARATOR = 1
+config.BRICK_SEPARATOR = .1
