@@ -7,7 +7,6 @@ let drawer = (function drawer() {
 
     let img = new Image()
     img.src = "https://github.com/Phreno/html5-game/blob/master/background.jpg?raw=true"
-    img.height = img.height * .75
     canvasContext.drawImage(img, (canvas.width - img.width) / 2, 40)
   }
 

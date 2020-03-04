@@ -9,7 +9,7 @@ ball = (function () {
       // définition au tour par tour
     },
     opacity: 1,
-    color: 'white',
+    color: config.BALL_COLOR,
     history: [],
     origin: { // coordonnées {x, y} de référence de la brick sous la balle
       // définition au tour par tour
@@ -28,17 +28,17 @@ ball = (function () {
   }
 
   function reset() {
-    instance.position.x = config.BALL_START_X
-    instance.position.y = config.BALL_START_Y
+    instance.position.x = paddle.position.x
+    instance.position.y = paddle.position.y
     coordinate.updateOther(instance)
   }
 
   function isBouncing() {
     let bounce = {
-      right:  instance.position.x > canvas.width,
-      left:  instance.position.x < 0,
+      right: instance.position.x > canvas.width,
+      left: instance.position.x < 0,
       top: instance.position.y < 0,
-      bottom:  (function () {
+      bottom: (function () {
         let isBellowPaddleTop = instance.position.y >= paddle.edge.top
         let isAbovePaddleBottom = instance.position.y <= paddle.edge.bottom
         let isAfterPaddleLeft = instance.position.x >= paddle.edge.left
