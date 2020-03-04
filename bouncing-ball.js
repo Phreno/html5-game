@@ -2,6 +2,10 @@
 variables globales
 */
 let canvas, canvasContext, gameInterval
+
+window.onkeypress(ev => {
+  gameInterval = setInterval(updateAll, config.REFRESH_RATE)
+})
 /*
 chargement du canvas
 */
